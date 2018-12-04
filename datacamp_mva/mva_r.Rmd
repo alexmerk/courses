@@ -9,7 +9,7 @@ output: rmarkdown::github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, echo=FALSE}
 #install.packages("pacman", repos="http://cran.us.r-project.org")
 library(pacman)
 pacman::p_load(ggplot2,

@@ -3,19 +3,6 @@ Multivar Stat Distr in R
 alexmerk
 November 30, 2018
 
-``` r
-#install.packages("pacman", repos="http://cran.us.r-project.org")
-library(pacman)
-pacman::p_load(ggplot2,
-               GGally,
-               mvtnorm,
-               sn,
-               MVN,
-               scatterplot3d,
-               factoextra,
-               corrplot)
-```
-
 1 Reading and plotting multivariate data
 ----------------------------------------
 
@@ -147,12 +134,12 @@ head(multnorm.sample)
 ```
 
     ##           [,1]       [,2]
-    ## [1,] -3.083096 -3.8271691
-    ## [2,]  6.579740  1.7075843
-    ## [3,] -1.582105 -3.2146507
-    ## [4,]  3.206260 -2.6743487
-    ## [5,]  3.278787  0.7257735
-    ## [6,]  1.038319 -2.4077120
+    ## [1,] -1.629133 -3.6332591
+    ## [2,]  2.775051 -0.2581057
+    ## [3,]  5.527070  0.4746326
+    ## [4,]  1.396367 -4.2282614
+    ## [5,] -1.747951 -3.1623502
+    ## [6,]  3.642156  0.8660089
 
 ``` r
 # Scatterplot of the bivariate samples 
@@ -288,22 +275,22 @@ mvn(multnorm.sample, mvnTest="mardia")
 
     ## $multivariateNormality
     ##              Test         Statistic           p value Result
-    ## 1 Mardia Skewness  4.50219834700869 0.342286892329864    YES
-    ## 2 Mardia Kurtosis 0.172393958020374 0.863127821871863    YES
+    ## 1 Mardia Skewness   1.2842321121062  0.86404505216393    YES
+    ## 2 Mardia Kurtosis -1.33371123705396 0.182298510644533    YES
     ## 3             MVN              <NA>              <NA>    YES
     ## 
     ## $univariateNormality
     ##           Test  Variable Statistic   p value Normality
-    ## 1 Shapiro-Wilk  Column1     0.9934    0.9134    YES   
-    ## 2 Shapiro-Wilk  Column2     0.9891    0.5943    YES   
+    ## 1 Shapiro-Wilk  Column1     0.9927    0.8716    YES   
+    ## 2 Shapiro-Wilk  Column2     0.9920    0.8232    YES   
     ## 
     ## $Descriptives
-    ##     n      Mean  Std.Dev    Median       Min       Max        25th
-    ## 1 100  2.398241 3.112652  2.692958 -4.517334 11.350855 -0.02847685
-    ## 2 100 -1.785651 2.230358 -1.853192 -9.185953  3.384274 -3.21131313
-    ##         75th       Skew    Kurtosis
-    ## 1  4.4233138  0.1020264 -0.20676449
-    ## 2 -0.1807008 -0.1804888  0.08267562
+    ##     n      Mean  Std.Dev    Median       Min      Max       25th
+    ## 1 100  1.647414 3.008878  1.821909 -5.642130 9.185376 -0.5256106
+    ## 2 100 -1.920030 2.038923 -1.919975 -6.466704 2.668639 -3.2528109
+    ##         75th       Skew   Kurtosis
+    ## 1  3.4762973 0.07515870 -0.4792559
+    ## 2 -0.4591212 0.02058334 -0.5028972
 
 ``` r
 # Use hzTest
@@ -357,13 +344,13 @@ multt.sample <- rmvt(200,df=5, delta=mu.sim, sigma=sigma.sim)
 head(multt.sample)
 ```
 
-    ##           [,1]         [,2]
-    ## [1,]  1.296507 -3.630888843
-    ## [2,] -1.194834 -3.150037314
-    ## [3,]  6.091285  0.003855692
-    ## [4,]  3.911209 -1.786815682
-    ## [5,]  4.533806  0.970568770
-    ## [6,]  6.722377  1.602526216
+    ##           [,1]        [,2]
+    ## [1,] -2.623689 -6.72772945
+    ## [2,]  2.086290 -0.07541332
+    ## [3,]  4.586898 -3.21899395
+    ## [4,]  1.144049 -2.54114593
+    ## [5,]  4.104547 -2.25803391
+    ## [6,] -1.647042 -5.11942871
 
 ``` r
 # Check multivariate normality
@@ -374,22 +361,22 @@ mvn(multt.sample, mvnTest="mardia", multivariatePlot = "qq")
 
     ## $multivariateNormality
     ##              Test        Statistic              p value Result
-    ## 1 Mardia Skewness 51.7419464118513 1.56193332529871e-10     NO
-    ## 2 Mardia Kurtosis 12.8233485940948                    0     NO
+    ## 1 Mardia Skewness 71.2856007462788 1.21483455046145e-14     NO
+    ## 2 Mardia Kurtosis 16.0366178083445                    0     NO
     ## 3             MVN             <NA>                 <NA>     NO
     ## 
     ## $univariateNormality
     ##           Test  Variable Statistic   p value Normality
-    ## 1 Shapiro-Wilk  Column1     0.9599  <0.001      NO    
-    ## 2 Shapiro-Wilk  Column2     0.9410  <0.001      NO    
+    ## 1 Shapiro-Wilk  Column1     0.9492  <0.001      NO    
+    ## 2 Shapiro-Wilk  Column2     0.9903  0.2009      YES   
     ## 
     ## $Descriptives
-    ##     n      Mean  Std.Dev    Median        Min       Max       25th
-    ## 1 200  1.953539 3.645240  1.788258 -14.974307 17.327621 -0.1789746
-    ## 2 200 -1.948850 2.305187 -2.049755  -8.999975  9.460375 -3.2847714
-    ##         75th      Skew Kurtosis
-    ## 1  3.9180451 0.1262332 3.212592
-    ## 2 -0.9747879 0.9526393 3.844293
+    ##     n      Mean  Std.Dev    Median       Min       Max       25th
+    ## 1 200  2.233447 3.868749  2.078632 -6.978595 22.986899 -0.1197892
+    ## 2 200 -1.812209 2.362935 -1.878607 -8.591482  3.651092 -3.3511379
+    ##         75th       Skew  Kurtosis
+    ## 1  4.2453522 0.96562179 3.7498362
+    ## 2 -0.3920431 0.05932585 0.0549246
 
 ### 3.2 Density and cumulative density for MV-t
 
@@ -424,9 +411,9 @@ scatterplot3d(cbind(multt.sample, multt.dens),
 pmvt(lower=c(-5,-5), upper=c(5,5), df=5, delta=mu.sim, sigma=sigma.sim)
 ```
 
-    ## [1] 0.6628607
+    ## [1] 0.662847
     ## attr(,"error")
-    ## [1] 0.0008002231
+    ## [1] 0.0009264362
     ## attr(,"msg")
     ## [1] "Normal Completion"
 
@@ -436,10 +423,10 @@ qmvt(0.90, tail="both", df=5, delta=mu.sim, sigma=diag(2))
 ```
 
     ## $quantile
-    ## [1] 4.998444
+    ## [1] 4.999043
     ## 
     ## $f.quantile
-    ## [1] -1.733438e-07
+    ## [1] -1.736369e-07
     ## 
     ## attr(,"message")
     ## [1] "Normal Completion"
@@ -461,13 +448,13 @@ colnames(skewnorm.sample) <- c("x1","x2")
 head(skewnorm.sample)
 ```
 
-    ##              x1        x2
-    ## [1,]  4.7278400 -1.854951
-    ## [2,] -5.1360347 -6.859828
-    ## [3,]  6.1902245 -2.166066
-    ## [4,]  3.5437474 -1.617492
-    ## [5,]  0.3170299 -4.208416
-    ## [6,]  2.8296218 -1.971933
+    ##            x1         x2
+    ## [1,] 6.357561  0.6894898
+    ## [2,] 3.221799 -2.1559613
+    ## [3,] 4.820868 -1.3825144
+    ## [4,] 4.391696 -1.0956763
+    ## [5,] 4.501375 -0.3193957
+    ## [6,] 3.145549 -2.4798012
 
 ``` r
 # Generate the skew-t samples 
@@ -479,12 +466,12 @@ head(skewt.sample)
 ```
 
     ##          [,1]       [,2]
-    ## [1,] 9.233234 -0.3960368
-    ## [2,] 4.409762 -1.0343672
-    ## [3,] 4.756114 -0.2903418
-    ## [4,] 5.658298 -1.3595251
-    ## [5,] 3.376499 -2.1516667
-    ## [6,] 1.041633 -3.0191202
+    ## [1,] 1.940880 -1.6484037
+    ## [2,] 2.694683 -2.8762022
+    ## [3,] 6.231634 -0.1916281
+    ## [4,] 1.003166 -3.6945657
+    ## [5,] 7.196804  1.0840056
+    ## [6,] 4.656526 -0.8313314
 
 #### Plotting and testing of skewed-densities
 
