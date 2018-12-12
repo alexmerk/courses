@@ -9,9 +9,9 @@ output: rmarkdown::github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction to dplyr and tbl
-### 1.1 Reading the data set as a tibble
-```{r practice 1.1}
+
+### 1 Reading the data set as a tibble
+```{r 1 reading data}
 
 # Load the dplyr package
 library(dplyr)
@@ -35,8 +35,8 @@ glimpse(hflights)
 carriers <- hflights$UniqueCarrier
 ```
 
-### 1.2 Changing labels of hflights
-```{r practice 1.2}
+### 2 Recoding data
+```{r 2 recoding}
 # Both the dplyr and hflights packages are loaded into workspace
 lut <- c("AA" = "American", "AS" = "Alaska", "B6" = "JetBlue", "CO" = "Continental", 
          "DL" = "Delta", "OO" = "SkyWest", "UA" = "United", "US" = "US_Airways", 
@@ -60,5 +60,240 @@ hflights$Code <- lut[hflights$CancellationCode]
 
 # Glimpse at hflights
 glimpse(hflights)
+```
+
+## 3 select()
+```{r 3 select()}
+# hflights is pre-loaded as a tbl, together with the necessary libraries.
+
+# Print out a tbl with the four columns of hflights related to delay
+select(hflights, ActualElapsedTime, AirTime, ArrDelay, DepDelay)
+
+# Print out the columns Origin up to Cancelled of hflights
+select(hflights, Origin:Cancelled)
+
+# Find the most concise way to select: columns Year up to and including DayOfWeek, 
+# columns ArrDelay up to and including Diverted
+select(hflights, Year:DayOfWeek, ArrDelay:Diverted)
+
+# As usual, hflights is pre-loaded as a tbl, together with the necessary libraries.
+
+# Print out a tbl containing just ArrDelay and DepDelay
+select(hflights, ArrDelay, DepDelay)
+
+# Print out a tbl as described in the second instruction, using both helper functions and variable names
+select(hflights, UniqueCarrier, ends_with("Num"), contains("Cancel"))
+
+# Print out a tbl as described in the third instruction, using only helper functions.
+select(hflights, contains("Time"), contains("Delay"))
+```
+
+### 4 mutate()
+```{r 4 mutate()}
+ # hflights and dplyr are loaded and ready to serve you.
+
+# Add the new variable ActualGroundTime to a copy of hflights and save the result as g1.
+g1 <- mutate(hflights, ActualGroundTime = ActualElapsedTime - AirTime)
+
+# Add the new variable GroundTime to g1. Save the result as g2.
+g2 <- mutate(g1, GroundTime = TaxiIn + TaxiOut)
+
+# Add the new variable AverageSpeed to g2. Save the result as g3.
+g3 <- mutate(g2, AverageSpeed = 60 * Distance/AirTime)
+
+# Print out g3
+g3
+
+# hflights and dplyr are ready, are you?
+
+# Add a second variable loss_ratio to the dataset: m1
+m1 <- mutate(hflights,
+  loss = ArrDelay - DepDelay,
+  loss_ratio = loss/DepDelay)
+
+# Add the three variables as described in the third instruction: m2
+m2 <- mutate(hflights,
+  TotalTaxi = TaxiIn + TaxiOut,
+  ActualGroundTime = ActualElapsedTime - AirTime,
+  Diff = TotalTaxi - ActualGroundTime)
+```
+
+### 5 filter()
+```{r 5 filter()}
+# hflights is at your disposal as a tbl, with clean carrier names
+
+# All flights that traveled 3000 miles or more
+filter(hflights, Distance >= 3000)
+
+# All flights flown by one of JetBlue, Southwest, or Delta
+filter(hflights, UniqueCarrier %in% c("JetBlue","Southwest","Delta"))
+
+# All flights where taxiing took longer than flying
+filter(hflights, (TaxiOut+TaxiIn)>AirTime)
+
+
+
+# All flights that departed before 5am or arrived after 10pm
+filter(hflights, DepTime<500 | ArrTime >2200)
+
+# All flights that departed late but arrived ahead of schedule
+filter(hflights, DepDelay>0 & ArrDelay<0)
+
+# All flights that were cancelled after being delayed
+filter(hflights, DepDelay>0 & Cancelled==1)
+
+
+
+# Select the flights that had JFK as their destination: c1
+c1 <- filter(hflights, Dest=="JFK")
+
+# Combine the Year, Month and DayofMonth variables to create a Date column: c2
+c2 <- mutate (c1, Date = paste(Year, Month, DayofMonth, sep="-"))
+
+# Print out a selection of columns of c2
+select(c2, Date, DepTime, ArrTime, TailNum)
+```
+
+### 6 arrange()
+```{r}
+# dplyr and the hflights tbl are available
+
+# Definition of dtc
+dtc <- filter(hflights, Cancelled == 1, !is.na(DepDelay))
+
+# Arrange dtc by departure delays
+arrange(dtc, DepDelay)
+
+# Arrange dtc so that cancellation reasons are grouped
+arrange(dtc, CancellationCode)
+
+# Arrange dtc according to carrier and departure delays
+arrange(dtc, UniqueCarrier, DepDelay)
+
+# dplyr and the hflights tbl are available
+
+# Arrange according to carrier and decreasing departure delays
+arrange(hflights, UniqueCarrier, desc(DepDelay))
+
+# Arrange flights by total delay (normal order).
+arrange(hflights, (DepDelay+ArrDelay))
+```
+
+### 7 summarise()
+```{r}
+# Print out a summary with variables min_dist and max_dist
+summarise(hflights, min_dist=min(Distance), max_dist=max(Distance))
+
+# Print out a summary with variable max_div
+summarise(filter(hflights, Diverted==1), max_div=max(Distance))
+
+# hflights is available
+
+# Remove rows that have NA ArrDelay: temp1
+temp1<- filter(hflights, ArrDelay!="NA")
+
+# Generate summary about ArrDelay column of temp1
+summarize(temp1, earliest=min(ArrDelay), average = mean(ArrDelay), latest = max(ArrDelay), sd=sd(ArrDelay))
+
+# Keep rows that have no NA TaxiIn and no NA TaxiOut: temp2
+temp2 <- filter(hflights, TaxiIn!="NA" & TaxiOut!="NA")
+
+# Print the maximum taxiing difference of temp2 with summarize()
+summarize(temp2, max_taxi_diff=max(abs(TaxiIn-TaxiOut)))
+```
+
+### 8 The pipe operator %>%
+```{r}
+# hflights and dplyr are both loaded and ready to serve you
+
+# Write the 'piped' version of the English sentences.
+hflights %>% mutate(diff=TaxiOut-TaxiIn) %>%
+    filter(diff!="NA") %>% 
+    summarise(avg=mean(diff))
+
+# Chain together mutate(), filter() and summarize()
+hflights %>% 
+    mutate(RealTime=ActualElapsedTime+100, mph=(60*Distance)/RealTime) %>%
+    filter(mph!="NA" & mph<70) %>%
+    summarize(n_less=n(), n_dest=n_distinct(Dest), min_dist=min(Distance), max_dist=max(Distance))
+
+# Finish the command with a filter() and summarize() call
+hflights %>%
+  mutate(
+    RealTime = ActualElapsedTime + 100, 
+    mph = 60 * Distance / RealTime
+  ) %>% 
+    filter(mph<105 | Cancelled=="1" | Diverted=="1") %>%
+    summarize(n_non=n(),
+              n_dest=n_distinct(Dest),
+              min_dist=min(Distance),
+              max_dist=max(Distance))
+
+# hflights and dplyr are loaded
+
+# Count the number of overnight flights
+filter(hflights, DepTime!="NA", ArrTime!="NA", DepTime>ArrTime) %>%
+summarize(num=n())
+```
+
+### 9 group_by()
+```{r}
+# hflights is in the workspace as a tbl, with translated carrier names
+
+# Make an ordered per-carrier summary of hflights
+hflights %>%
+  group_by(UniqueCarrier) %>%
+  summarize(
+    p_canc = 100*sum(Cancelled=="1")/n(),
+    avg_delay = mean(ArrDelay, na.rm=TRUE)
+  ) %>%
+  arrange(avg_delay, p_canc)
+
+
+
+# dplyr and hflights (with translated carrier names) are pre-loaded
+
+# How many airplanes only flew to one destination?
+hflights %>%
+  group_by(TailNum) %>%
+  summarize(ndest=n_distinct(Dest)) %>%
+  filter(ndest=="1") %>%
+  summarize(nplanes=n())
+
+# Find the most visited destination for each carrier. 
+# The tbl you print out should have a single column,
+# named nplanes and a single row.
+hflights %>%
+  group_by(UniqueCarrier, Dest) %>%
+  summarize(n=n()) %>%
+  mutate(rank= rank(desc(n))) %>%
+  filter(rank=="1")
+```
+
+### 10 dplyr and databases
+```{r}
+library(data.table)
+hflights2 <- as.data.table(hflights)
+
+# hflights2 is pre-loaded as a data.table
+
+# Use summarize to calculate n_carrier
+hflights2 %>% summarize(n_carrier=n_distinct(UniqueCarrier))
+
+# Set up a connection to the mysql database
+my_db <- src_mysql(dbname = "dplyr", 
+                   host = "", 
+                   port = 111, 
+                   user = "",
+                   password = "")
+
+# Reference a table within that source: nycflights
+nycflights <- tbl(my_db, "dplyr")
+
+# glimpse at nycflights
+glimpse(nycflights)
+
+# Ordered, grouped summary of nycflights
+  nycflights %>% group_by(carrier) %>% summarize(n_flights=n(), avg_delay=mean(arr_delay, na.rm=TRUE)) %>% arrange(avg_delay)
 ```
 
