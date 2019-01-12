@@ -517,3 +517,350 @@ select(c2, Date, DepTime, ArrTime, TailNum)
     ## # ... with 685 more rows
 
 ### 6 arrange()
+
+``` r
+# dplyr and the hflights tbl are available
+
+# Definition of dtc
+dtc <- filter(hflights, Cancelled == 1, !is.na(DepDelay))
+
+# Arrange dtc by departure delays
+arrange(dtc, DepDelay)
+```
+
+    ## # A tibble: 68 x 23
+    ##     Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
+    ##    <int> <int>      <int>     <int>   <int>   <int> <chr>             <int>
+    ##  1  2011     7         23         6     605      NA F9                  225
+    ##  2  2011     1         17         1     916      NA XE                 3068
+    ##  3  2011    12          1         4     541      NA US                  282
+    ##  4  2011    10         12         3    2022      NA MQ                 3724
+    ##  5  2011     7         29         5    1424      NA CO                 1079
+    ##  6  2011     9         29         4    1639      NA OO                 2062
+    ##  7  2011     2          9         3     555      NA MQ                 3265
+    ##  8  2011     5          9         1     715      NA OO                 1177
+    ##  9  2011     1         20         4    1413      NA UA                  552
+    ## 10  2011     1         17         1     831      NA WN                    1
+    ## # ... with 58 more rows, and 15 more variables: TailNum <chr>,
+    ## #   ActualElapsedTime <int>, AirTime <int>, ArrDelay <int>,
+    ## #   DepDelay <int>, Origin <chr>, Dest <chr>, Distance <int>,
+    ## #   TaxiIn <int>, TaxiOut <int>, Cancelled <int>, CancellationCode <chr>,
+    ## #   Diverted <int>, Carrier <chr>, Code <chr>
+
+``` r
+# Arrange dtc so that cancellation reasons are grouped
+arrange(dtc, CancellationCode)
+```
+
+    ## # A tibble: 68 x 23
+    ##     Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
+    ##    <int> <int>      <int>     <int>   <int>   <int> <chr>             <int>
+    ##  1  2011     1         20         4    1413      NA UA                  552
+    ##  2  2011     1          7         5    2028      NA XE                 3050
+    ##  3  2011     2          4         5    1638      NA AA                 1121
+    ##  4  2011     2          8         2    1057      NA CO                  408
+    ##  5  2011     2          1         2    1508      NA OO                 5812
+    ##  6  2011     2         21         1    2257      NA OO                 1111
+    ##  7  2011     2          9         3     555      NA MQ                 3265
+    ##  8  2011     3         18         5     727      NA UA                  109
+    ##  9  2011     4          4         1    1632      NA DL                    8
+    ## 10  2011     4          8         5    1608      NA WN                    4
+    ## # ... with 58 more rows, and 15 more variables: TailNum <chr>,
+    ## #   ActualElapsedTime <int>, AirTime <int>, ArrDelay <int>,
+    ## #   DepDelay <int>, Origin <chr>, Dest <chr>, Distance <int>,
+    ## #   TaxiIn <int>, TaxiOut <int>, Cancelled <int>, CancellationCode <chr>,
+    ## #   Diverted <int>, Carrier <chr>, Code <chr>
+
+``` r
+# Arrange dtc according to carrier and departure delays
+arrange(dtc, UniqueCarrier, DepDelay)
+```
+
+    ## # A tibble: 68 x 23
+    ##     Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
+    ##    <int> <int>      <int>     <int>   <int>   <int> <chr>             <int>
+    ##  1  2011     8         18         4    1808      NA AA                 1294
+    ##  2  2011     2          4         5    1638      NA AA                 1121
+    ##  3  2011     7         29         5    1424      NA CO                 1079
+    ##  4  2011     1         26         3    1703      NA CO                  410
+    ##  5  2011     8         11         4    1320      NA CO                 1669
+    ##  6  2011     7         25         1    1654      NA CO                 1422
+    ##  7  2011     1         26         3    1926      NA CO                  310
+    ##  8  2011     3         31         4    1016      NA CO                  586
+    ##  9  2011     2          8         2    1057      NA CO                  408
+    ## 10  2011     4          4         1    1632      NA DL                    8
+    ## # ... with 58 more rows, and 15 more variables: TailNum <chr>,
+    ## #   ActualElapsedTime <int>, AirTime <int>, ArrDelay <int>,
+    ## #   DepDelay <int>, Origin <chr>, Dest <chr>, Distance <int>,
+    ## #   TaxiIn <int>, TaxiOut <int>, Cancelled <int>, CancellationCode <chr>,
+    ## #   Diverted <int>, Carrier <chr>, Code <chr>
+
+``` r
+# dplyr and the hflights tbl are available
+
+# Arrange according to carrier and decreasing departure delays
+arrange(hflights, UniqueCarrier, desc(DepDelay))
+```
+
+    ## # A tibble: 227,496 x 23
+    ##     Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
+    ##    <int> <int>      <int>     <int>   <int>   <int> <chr>             <int>
+    ##  1  2011    12         12         1     650     808 AA                 1740
+    ##  2  2011    11         19         6    1752    1910 AA                 1903
+    ##  3  2011    12         22         4    1728    1848 AA                 1903
+    ##  4  2011    10         23         7    2305       2 AA                  742
+    ##  5  2011     9         27         2    1206    1300 AA                 1948
+    ##  6  2011     3         17         4    1647    1747 AA                 1505
+    ##  7  2011     6         21         2     955    1315 AA                  466
+    ##  8  2011     5         20         5    2359     130 AA                  426
+    ##  9  2011     4         19         2    2023    2142 AA                 1925
+    ## 10  2011     5         12         4    2133      53 AA                 1294
+    ## # ... with 227,486 more rows, and 15 more variables: TailNum <chr>,
+    ## #   ActualElapsedTime <int>, AirTime <int>, ArrDelay <int>,
+    ## #   DepDelay <int>, Origin <chr>, Dest <chr>, Distance <int>,
+    ## #   TaxiIn <int>, TaxiOut <int>, Cancelled <int>, CancellationCode <chr>,
+    ## #   Diverted <int>, Carrier <chr>, Code <chr>
+
+``` r
+# Arrange flights by total delay (normal order).
+arrange(hflights, (DepDelay+ArrDelay))
+```
+
+    ## # A tibble: 227,496 x 23
+    ##     Year Month DayofMonth DayOfWeek DepTime ArrTime UniqueCarrier FlightNum
+    ##    <int> <int>      <int>     <int>   <int>   <int> <chr>             <int>
+    ##  1  2011     7          3         7    1914    2039 XE                 2804
+    ##  2  2011     8         31         3     934    1039 OO                 2040
+    ##  3  2011     8         21         7     935    1039 OO                 2001
+    ##  4  2011     8         28         7    2059    2206 OO                 2003
+    ##  5  2011     8         29         1     935    1041 OO                 2040
+    ##  6  2011    12         25         7     741     926 OO                 4591
+    ##  7  2011     1         30         7     620     812 OO                 4461
+    ##  8  2011     8          3         3    1741    1810 XE                 2603
+    ##  9  2011     8          4         4     930    1041 OO                 1171
+    ## 10  2011     8         18         4     939    1043 OO                 2001
+    ## # ... with 227,486 more rows, and 15 more variables: TailNum <chr>,
+    ## #   ActualElapsedTime <int>, AirTime <int>, ArrDelay <int>,
+    ## #   DepDelay <int>, Origin <chr>, Dest <chr>, Distance <int>,
+    ## #   TaxiIn <int>, TaxiOut <int>, Cancelled <int>, CancellationCode <chr>,
+    ## #   Diverted <int>, Carrier <chr>, Code <chr>
+
+### 7 summarise()
+
+``` r
+# Print out a summary with variables min_dist and max_dist
+summarise(hflights, min_dist=min(Distance), max_dist=max(Distance))
+```
+
+    ## # A tibble: 1 x 2
+    ##   min_dist max_dist
+    ##      <dbl>    <dbl>
+    ## 1       79     3904
+
+``` r
+# Print out a summary with variable max_div
+summarise(filter(hflights, Diverted==1), max_div=max(Distance))
+```
+
+    ## # A tibble: 1 x 1
+    ##   max_div
+    ##     <dbl>
+    ## 1    3904
+
+``` r
+# hflights is available
+
+# Remove rows that have NA ArrDelay: temp1
+temp1<- filter(hflights, ArrDelay!="NA")
+
+# Generate summary about ArrDelay column of temp1
+summarize(temp1, earliest=min(ArrDelay), average = mean(ArrDelay), latest = max(ArrDelay), sd=sd(ArrDelay))
+```
+
+    ## # A tibble: 1 x 4
+    ##   earliest average latest    sd
+    ##      <dbl>   <dbl>  <dbl> <dbl>
+    ## 1      -70    7.09    978  30.7
+
+``` r
+# Keep rows that have no NA TaxiIn and no NA TaxiOut: temp2
+temp2 <- filter(hflights, TaxiIn!="NA" & TaxiOut!="NA")
+
+# Print the maximum taxiing difference of temp2 with summarize()
+summarize(temp2, max_taxi_diff=max(abs(TaxiIn-TaxiOut)))
+```
+
+    ## # A tibble: 1 x 1
+    ##   max_taxi_diff
+    ##           <int>
+    ## 1           160
+
+### 8 The pipe operator %&gt;%
+
+``` r
+# hflights and dplyr are both loaded and ready to serve you
+
+# Write the 'piped' version of the English sentences.
+hflights %>% mutate(diff=TaxiOut-TaxiIn) %>%
+    filter(diff!="NA") %>% 
+    summarise(avg=mean(diff))
+```
+
+    ## # A tibble: 1 x 1
+    ##     avg
+    ##   <dbl>
+    ## 1  8.99
+
+``` r
+# Chain together mutate(), filter() and summarize()
+hflights %>% 
+    mutate(RealTime=ActualElapsedTime+100, mph=(60*Distance)/RealTime) %>%
+    filter(mph!="NA" & mph<70) %>%
+    summarize(n_less=n(), n_dest=n_distinct(Dest), min_dist=min(Distance), max_dist=max(Distance))
+```
+
+    ## # A tibble: 1 x 4
+    ##   n_less n_dest min_dist max_dist
+    ##    <int>  <int>    <dbl>    <dbl>
+    ## 1   6726     13       79      305
+
+``` r
+# Finish the command with a filter() and summarize() call
+hflights %>%
+  mutate(
+    RealTime = ActualElapsedTime + 100, 
+    mph = 60 * Distance / RealTime
+  ) %>% 
+    filter(mph<105 | Cancelled=="1" | Diverted=="1") %>%
+    summarize(n_non=n(),
+              n_dest=n_distinct(Dest),
+              min_dist=min(Distance),
+              max_dist=max(Distance))
+```
+
+    ## # A tibble: 1 x 4
+    ##   n_non n_dest min_dist max_dist
+    ##   <int>  <int>    <dbl>    <dbl>
+    ## 1 42400    113       79     3904
+
+``` r
+# hflights and dplyr are loaded
+
+# Count the number of overnight flights
+filter(hflights, DepTime!="NA", ArrTime!="NA", DepTime>ArrTime) %>%
+summarize(num=n())
+```
+
+    ## # A tibble: 1 x 1
+    ##     num
+    ##   <int>
+    ## 1  2718
+
+### 9 group\_by()
+
+``` r
+# hflights is in the workspace as a tbl, with translated carrier names
+
+# Make an ordered per-carrier summary of hflights
+hflights %>%
+  group_by(UniqueCarrier) %>%
+  summarize(
+    p_canc = 100*sum(Cancelled=="1")/n(),
+    avg_delay = mean(ArrDelay, na.rm=TRUE)
+  ) %>%
+  arrange(avg_delay, p_canc)
+```
+
+    ## # A tibble: 15 x 3
+    ##    UniqueCarrier p_canc avg_delay
+    ##    <chr>          <dbl>     <dbl>
+    ##  1 US             1.13     -0.631
+    ##  2 AA             1.85      0.892
+    ##  3 FL             0.982     1.85 
+    ##  4 AS             0         3.19 
+    ##  5 YV             1.27      4.01 
+    ##  6 DL             1.59      6.08 
+    ##  7 CO             0.678     6.10 
+    ##  8 MQ             2.90      7.15 
+    ##  9 EV             3.45      7.26 
+    ## 10 WN             1.55      7.59 
+    ## 11 F9             0.716     7.67 
+    ## 12 XE             1.55      8.19 
+    ## 13 OO             1.39      8.69 
+    ## 14 B6             2.59      9.86 
+    ## 15 UA             1.64     10.5
+
+``` r
+# dplyr and hflights (with translated carrier names) are pre-loaded
+
+# How many airplanes only flew to one destination?
+hflights %>%
+  group_by(TailNum) %>%
+  summarize(ndest=n_distinct(Dest)) %>%
+  filter(ndest=="1") %>%
+  summarize(nplanes=n())
+```
+
+    ## # A tibble: 1 x 1
+    ##   nplanes
+    ##     <int>
+    ## 1    1526
+
+``` r
+# Find the most visited destination for each carrier. 
+# The tbl you print out should have a single column,
+# named nplanes and a single row.
+hflights %>%
+  group_by(UniqueCarrier, Dest) %>%
+  summarize(n=n()) %>%
+  mutate(rank= rank(desc(n))) %>%
+  filter(rank=="1")
+```
+
+    ## # A tibble: 15 x 4
+    ## # Groups:   UniqueCarrier [15]
+    ##    UniqueCarrier Dest      n  rank
+    ##    <chr>         <chr> <int> <dbl>
+    ##  1 AA            DFW    2105     1
+    ##  2 AS            SEA     365     1
+    ##  3 B6            JFK     695     1
+    ##  4 CO            EWR    3924     1
+    ##  5 DL            ATL    2396     1
+    ##  6 EV            DTW     851     1
+    ##  7 F9            DEN     837     1
+    ##  8 FL            ATL    2029     1
+    ##  9 MQ            DFW    2424     1
+    ## 10 OO            COS    1335     1
+    ## 11 UA            SFO     643     1
+    ## 12 US            CLT    2212     1
+    ## 13 WN            DAL    8243     1
+    ## 14 XE            CRP    3175     1
+    ## 15 YV            CLT      71     1
+
+### 10 dplyr and databases
+
+``` r
+library(data.table)
+hflights2 <- as.data.table(hflights)
+
+# hflights2 is pre-loaded as a data.table
+
+# Use summarize to calculate n_carrier
+hflights2 %>% summarize(n_carrier=n_distinct(UniqueCarrier))
+
+# Set up a connection to the mysql database
+my_db <- src_mysql(dbname = "dplyr", 
+                   host = "", 
+                   port = 111, 
+                   user = "",
+                   password = "")
+
+# Reference a table within that source: nycflights
+nycflights <- tbl(my_db, "dplyr")
+
+# glimpse at nycflights
+glimpse(nycflights)
+
+# Ordered, grouped summary of nycflights
+  nycflights %>% group_by(carrier) %>% summarize(n_flights=n(), avg_delay=mean(arr_delay, na.rm=TRUE)) %>% arrange(avg_delay)
+```

@@ -5,19 +5,23 @@ date: "December 12, 2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE, cache=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 # Installing the packages
 library(pacman)
 pacman::p_load(dplyr, ggplot2, countrycode, broom, purrr, tidyr)
-
-# Importing the data set
-votes <- as_tibble(read.csv(
-    file="https://github.com/alexmerk/xcourse/raw/master/datacamp_eda/votes.csv"))
 ```
 
-1 Data cleaning and summarizing with dplyr
+```{r import, cache=TRUE}
+# Importing data
+votes <- as_tibble(read.csv(
+    file="https://github.com/alexmerk/xcourse/raw/master/datacamp_eda/votes.csv"))
+descriptions <- as_tibble(read.csv(
+    file="https://github.com/alexmerk/xcourse/raw/master/datacamp_eda/descriptions.csv"))
+```
+
+### 1 Data cleaning and summarizing with dplyr
 ```{r dplyr}
 # Filter for votes that are "yes", "abstain", or "no"
 # Add another %>% step to add a year column
@@ -55,7 +59,7 @@ by_country %>%
   
 ```
 
-2 Visualizing data with ggplot2
+### 2 Visualizing data with ggplot2
 ```{r ggplot2}
 # Define by_year
 by_year <- votes_processed %>%
@@ -141,7 +145,7 @@ ggplot(filtered_countries, aes(year, percent_yes)) +
   facet_wrap(~ country, scales = "free_y")
 ```
 
-3 Tidy modeling with broom
+### 3 Tidy modeling with broom
 ```{r broom}
 # Percentage of yes votes from the US by year: US_by_year
 US_by_year <- by_year_country %>%
@@ -180,9 +184,10 @@ UK_tidied <- tidy(UK_fit)
 # Combine the two tidied models
 bind_rows(US_tidied, UK_tidied)
 
-#######################
-### Nesting the data ##
-#######################
+```
+
+#### Nesting the data
+```{r nesting}
 # Load the tidyr package
 #library(tidyr)
 
@@ -198,10 +203,12 @@ nested$data[nested$country=="Brazil"]
 
 # Unnest the data column to return it to its original form
 nested %>% unnest(data)
+```
 
-# Load tidyr and purrr
-#library(tidyr)
-#library(purrr)
+```{r map lm}
+
+# IMPORTANT: Ungroup the data set before nesting it.
+by_year_country <- by_year_country %>% ungroup()
 
 
 # Perform a linear regression on each item in the data column
@@ -221,7 +228,7 @@ by_year_country %>%
 country_coefficients <- by_year_country %>%
   nest(-country) %>%
   mutate(model = map(data, ~ lm(percent_yes ~ year, data = .)),
-         tidied = map(model, tidy)) %>%
+         tidied = map(model, ~tidy(.))) %>%
          unnest(tidied)
 
 # Print the resulting country_coefficients variable
@@ -256,4 +263,105 @@ arrange(filtered_countries, estimate)
 arrange(filtered_countries, desc(estimate))
 ```
 
+### 4 Joining data sets
+```{r warning=FALSE}
+# Load dplyr package
+#library(dplyr)
+
+# Print the votes_processed dataset
+votes_processed
+
+# Print the descriptions dataset
+descriptions
+
+# Join them together based on the "rcid" and "session" columns
+votes_joined <- inner_join(votes_processed, descriptions, 
+by=c("rcid", "session"))
+
+# Filter for votes related to colonialism
+votes_joined %>% filter(co==1)
+
+# Load the ggplot2 package
+#library(ggplot2)
+
+# Filter, then summarize by year: US_co_by_year
+US_co_by_year <- votes_joined %>% filter(co==1, country=="United States") %>% group_by(year) %>% summarize(percent_yes=mean(vote==1, na.rm=TRUE)) 
+
+# Graph the % of "yes" votes over time
+ggplot(US_co_by_year, aes(x=year, y=percent_yes)) +
+geom_line()
+
+
+# Load the tidyr package
+#library(tidyr)
+
+# Gather the six me/nu/di/hr/co/ec columns
+votes_joined %>%
+  gather(topic, has_topic, me:ec)
+
+# Perform gather again, then filter
+votes_gathered <- votes_joined %>%
+  gather(topic, has_topic, me:ec) %>%
+  filter(has_topic == 1)
+
+# Replace the two-letter codes in topic: votes_tidied
+votes_tidied <- votes_gathered %>%
+  mutate(topic = recode(topic,
+                        me = "Palestinian conflict",
+                        nu = "Nuclear weapons and nuclear material",
+                        di = "Arms control and disarmament",
+                        hr = "Human rights",
+                        co = "Colonialism",
+                        ec = "Economic development"))
+
+# Print votes_tidied
+votes_tidied
+
+# Summarize the percentage "yes" per country-year-topic
+by_country_year_topic <- votes_tidied %>% group_by(country, year, topic) %>%
+summarize(total=n(), percent_yes=mean(vote==1, na.rm=TRUE)) %>% ungroup()
+
+# Print by_country_year_topic
+by_country_year_topic
+
+# Load the ggplot2 package
+#library(ggplot2)
+
+# Filter by_country_year_topic for just the US
+US_by_country_year_topic <- by_country_year_topic %>% filter (country=="United States")
+
+# Plot % yes over time for the US, faceting by topic
+ggplot (US_by_country_year_topic, aes (x=year, y=percent_yes)) + geom_line() +
+facet_wrap(~topic)
+
+# Print by_country_year_topic
+by_country_year_topic
+
+# Fit model on the by_country_year_topic dataset
+country_topic_coefficients <- by_country_year_topic %>%
+nest(-country, -topic) %>%
+mutate(model=map(data, ~lm(percent_yes ~ year, data= .)),
+tidied=map(model, tidy)) %>%
+unnest(tidied)
+
+
+# Print country_topic_coefficients
+country_topic_coefficients
+
+# Create country_topic_filtered
+country_topic_filtered <- country_topic_coefficients %>%
+filter(term=="year")
+
+country_topic_filtered <- country_topic_filtered %>% mutate(p.adjusted=p.adjust(p.value)) %>%
+filter(p.adjusted <0.05)
+
+# Create vanuatu_by_country_year_topic
+vanuatu_by_country_year_topic <- by_country_year_topic %>% 
+filter (country=="Vanuatu")
+
+# Plot of percentage "yes" over time, faceted by topic
+ggplot(vanuatu_by_country_year_topic, aes(x=year, y=percent_yes)) + 
+  geom_line() +
+  facet_wrap (~topic)
+```
 

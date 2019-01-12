@@ -271,7 +271,7 @@ hflights %>%
 ```
 
 ### 10 dplyr and databases
-```{r}
+```{r, eval=FALSE}
 library(data.table)
 hflights2 <- as.data.table(hflights)
 
