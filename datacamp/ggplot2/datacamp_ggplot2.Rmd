@@ -10,12 +10,28 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=FALSE}
 # Load the ggplot2 package
-library (ggplot2)
+library(ggplot2)
 library(tidyr)
 
 # Loading the mtcars data set
 data(mtcars)
 data(diamonds)
+data(iris)
+
+# Transforming the data sets
+iris$Flower <- 1:nrow(iris)
+
+iris.wide <- iris %>%
+  gather(key, value, -Species, -Flower) %>%
+  separate(key, c("Part", "Measure"), "\\.") %>%
+  spread(Measure, value)
+
+iris.tidy <- iris %>%
+  gather(key, Value, -Species) %>%
+  separate(key, c("Part", "Measure"), "\\.")
+
+
+
 ```
 
 ## 1 Introduction ##
@@ -127,17 +143,6 @@ ggplot(iris.wide, aes(x = Length, y = Width, color = Part)) +
   facet_grid(. ~ Species)
 
 
-# Load the tidyr package
-library(tidyr)
-
-# Add column with unique ids (don't need to change)
-iris$Flower <- 1:nrow(iris)
-
-# Fill in the ___ to produce to the correct iris.wide dataset
-iris.wide <- iris %>%
-  gather(key, value, -Species, -Flower) %>%
-  separate(key, c("Part", "Measure"), "\\.") %>%
-  spread(Measure, value)
 ```
 
 ## 3 Aesthetics ##
@@ -227,7 +232,7 @@ ggplot(mtcars, aes(x=mpg, y=qsec, color=factor(cyl), shape=factor(am), size=(hp/
 cyl.am <- ggplot(mtcars, aes(x = factor(cyl), fill = factor(am)))
 
 cyl.am + 
-  geom_bar(position="default")
+  geom_bar(position="stack")
 
 # Fill - show proportion
 cyl.am + 
