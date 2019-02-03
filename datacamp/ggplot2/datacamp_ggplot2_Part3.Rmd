@@ -1,0 +1,662 @@
+---
+title: "Data Visualization with ggplot2 (Part 3)"
+output: github_document
+date: 2019-01-30
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r preliminary, include=FALSE}
+library(ggplot2)
+library(ggplot2movies)
+library(RColorBrewer)
+library(dplyr)
+library(viridis)
+library(PerformanceAnalytics)
+library(GGally)
+library(maps)
+library(ggmap)
+library(ggthemes)
+library(rgdal)
+
+data(diamonds)
+data(faithful)
+data(iris)
+mammals <- read.csv("C:/stat/mammals.csv")
+africa <- read.csv("C:/stat/africa.csv")
+africa <- africa[,2:4]
+
+```
+
+```{r data, include=FALSE, cache=TRUE}
+cities <- read.delim("C:/stat/US_cities.txt")
+
+small_data <- tribble(
+    ~x,
+    -3.5,
+    0.0,
+    0.5,
+    6.0
+)
+
+test_data <- tribble(
+    ~norm, ~bimodal, ~uniform,
+    -0.56047565, 0.1988103, -0.1172727,
+ -0.23017749, -0.6875870, -0.5366181,
+  1.55870831, -2.2651451, -1.5149118,
+  0.07050839, -1.4568059, -1.8120253,
+  0.12928774, -2.4143399, -0.9488148,
+  1.71506499, -2.4762469,  1.8745647,
+  0.460916206, -2.788602838, -0.04601807,
+ -1.265061235, -2.594617267, -0.08871188,
+ -0.686852852, -0.349092533,  0.99517152,
+ -0.445661970, -2.054028125,  0.67056093,
+  1.224081797, -1.880754764, -1.80233761,
+  0.359813827, -1.756312570,  0.78042098,
+  0.400771451, -0.767524122, -0.54695373,
+  0.110682716, -2.516063831,  1.53653443,
+ -0.555841135, -2.992507150,  1.10118892,
+  1.786913137, -0.324303068, -1.44318543,
+  0.497850478, -2.441163217, -0.81996292,
+ -1.966617157, -2.723065970, -1.49566886,
+  0.701355902, -3.236273119,  0.35960650,
+ -0.472791408, -3.284715722,  0.24670244,
+ -1.067823706, -2.573973479,  0.75488448,
+ -0.217974915, -1.382014183, -0.75491676,
+ -1.026004448, -0.890151861,  0.42234737,
+ -0.728891229, -1.292411646,  1.96413728,
+ -0.625039268, -2.363657297,  0.97281966,
+ -1.686693311, -1.940250063, -1.69657148,
+  0.837787044, -2.704596464, -0.19532437,
+  0.153373118, -2.717218162, -1.78585226,
+ -1.138136937, -1.115349501, -0.64177794,
+  1.253814921, -3.015592579,  0.93580860,
+  0.426464221, -0.044706035, -1.98357224,
+ -0.295071483, -2.090319594,  1.08763793,
+  0.895125661, -1.785461173, -0.14809916,
+  0.878133488, -2.738527705,  0.88336140,
+  0.821581082, -2.574388690,  0.66602287,
+  0.688640254, -3.317016132,  0.28829488,
+  0.553917654, -2.182925388,  0.81525180,
+ -0.061911711, -1.581017595,  0.62888424,
+ -0.305962664, -1.675695656, -0.84259142,
+ -0.380471001, -2.781536487, -1.61104218,
+ -0.694706979, -2.788621971,  1.84968528,
+ -0.207917278, -2.502198718,  0.94533612,
+ -1.265396352, -0.503939330,  0.45089387,
+  2.168955965, -3.137303621, -1.52028448,
+  1.207961998, -2.179051594,  0.20103619,
+ -1.123108583, -0.097638178, -0.94897489,
+ -0.402884835, -2.100974885,  1.59344332,
+ -0.466655354, -3.359840704, -1.96328022,
+  0.779965118, -2.664769435, -1.05506026,
+ -0.083369066, -1.514540021, -1.47982162,
+  0.253318514, -2.375602872, -0.69506741,
+ -0.028546755, -2.561876364,  0.90559555,
+ -0.042870457, -2.343917234,  1.96698094,
+  1.368602284, -1.909503353,  0.86053411,
+ -0.225770986, -0.401491229,  0.01775924,
+  1.516470604, -2.088565112, -0.25580931,
+ -1.548752804, -0.919200504,  1.79530100,
+  0.584613750, -1.369245884, -1.51927405,
+  0.123854244, -2.113639896, -1.69941929,
+  0.215941569, -3.532902003,  1.55608597,
+  0.379639483, -2.521117318, -0.30219162,
+ -0.502323453, -2.489870453, -1.83055728,
+ -0.333207384, -1.952845567,  0.58976857,
+ -1.018575383, -0.699801322, -0.12552335,
+ -1.071791226,  0.293078974,  0.47170449,
+  0.303528641, -0.452418941, -0.91673827,
+  0.448209779, -2.133150964, -1.37081885,
+  0.053004227, -3.756527396, -1.54298292,
+  0.922267468, -2.388779864,  0.03073145,
+  2.050084686, -1.910792777,  0.19212915,
+ -0.491031166, -1.154986996, -1.43741524,
+ -2.309168876, -1.037472032, -1.32092380,
+  1.005738524, -1.315690571,  1.04794129,
+ -0.709200763, -3.395274350,  0.10957976,
+ -0.688008616, -1.150356954,  1.44395743,
+  1.025571370, -2.446557216,  0.69421995,
+ -0.284773007, -1.825197300, -1.94783588,
+ -1.220717712, -1.925448823,  0.77279561,
+  0.181303480, -1.571833235,  1.56685493,
+ -0.138891362, -1.975325017,  0.52740070,
+  0.005764186, -3.667475098, -1.57082138,
+  0.385280401, -1.263504035,  1.68426082,
+ -0.370660032, -1.613973432,  0.70144952,
+  0.644376549, -2.265651625, -1.40562515,
+ -0.220486562, -1.881855489,  0.98136737,
+  0.331781964, -1.865961355,  1.77039545,
+  1.096839013, -1.778980531, -0.31686650,
+  0.435181491, -0.359153834, -0.80910769,
+ -0.325931586, -2.219050379, -0.96229332,
+  1.148807618, -1.831934616, -1.10847473,
+  0.993503856, -0.831616127,  0.26261737,
+  0.548396960, -0.945818977,  1.02660053,
+  0.238731735, -0.854736890,  0.67841418,
+ -0.627906076, -2.577468001,  0.18609118,
+  1.360652449,  0.002482730,  1.24585463,
+ -0.600259587, -1.933299129,  1.03666721,
+  2.187332993, -0.133148155, -1.91972614,
+  1.532610626, -3.350902686, -0.47638520,
+ -0.235700359, -1.979016414, -1.79647955,
+ -1.026420900, -0.750085429,  1.19161175,
+ -0.710406564,  1.284757813,  1.69479685,
+  0.256883709,  1.247311032,  0.17039348,
+ -0.246691878,  1.061461296,  1.40945840,
+ -0.347542599,  0.947486721,  0.33425145,
+ -0.951618567,  1.562840467,  0.67329457,
+ -0.045027725,  2.331179173,  0.04525839,
+ -0.784904469, -0.014210498,  1.05100236,
+ -1.667941937,  2.211980433,  1.61344915,
+ -0.380226520,  3.236675046,  1.28189805,
+  0.918996609,  4.037574018, -1.71427260,
+ -0.575346963,  3.301175992, -1.98441463,
+  0.607964322,  2.756774764, -1.79120554,
+ -1.617882708,  0.273269601,  1.46624072,
+ -0.055561966,  1.398493292,  0.30498068,
+  0.519407204,  1.647953543, -0.74462971,
+  0.301153362,  2.703523903,  1.83786314,
+  0.105676194,  1.894328666,  0.36477503,
+ -0.640706008,  0.741351372,  0.12563734,
+ -0.849704346,  3.684435708, -0.46425331,
+ -1.024128791,  2.911391292, -0.72178708,
+  0.117646597,  2.237430272,  1.23354502,
+ -0.947474614,  3.218108610, -1.83232201,
+ -0.490557444,  0.661225713, -0.54502922,
+ -0.256092192,  2.660820298,  1.42638787,
+  1.843862005,  1.477087624,  0.79178631,
+ -0.651949902,  2.683745522,  0.73794589,
+  0.235386572,  1.939178045, -0.60793979,
+  0.077960850,  2.632960713,  0.21872732,
+ -0.961856634,  3.335517615, -1.45102553,
+ -0.071308086,  2.007290090,  1.13972623,
+  1.444550858,  3.017558637,  1.54745029,
+  0.451504053,  0.811565965, -1.18361647,
+  0.041232922,  1.278395560,  1.08249185,
+ -0.422496832,  3.519217711,  0.38545184,
+ -2.053247222,  2.377387973,  1.83067897,
+  1.131337213, -0.052222820, -1.36524641,
+ -1.460640071,  0.635962548,  0.10389710,
+  0.739947511,  1.799218984,  1.49260547,
+  1.909103569,  2.865779404,  1.47882428,
+ -1.443893161,  1.898116744, -1.90524543,
+  0.701784335,  2.624187472,  1.90355877,
+ -0.262197489,  2.959005378, -0.03910321,
+ -1.572144159,  3.671054829, -0.44331871,
+ -1.514667654,  2.056016733, -0.32978016,
+ -1.601536174,  1.948018094, -1.62829672,
+ -0.530906522,  0.246762641, -1.35276316,
+ -1.461755585,  2.099327594, -0.37833402,
+  0.687916773,  1.428149942, -0.63274222,
+  2.100108941,  1.025990417, -0.33897019,
+ -1.287030476,  1.820093769, -0.78379012,
+  0.787738847,  3.014943173,  0.24112215,
+  0.769042241,  0.007251511, -1.37650340,
+  0.332202579,  1.572720713,  1.82631906,
+ -1.008376608,  2.116637284, -1.82413350,
+ -0.119452607,  1.106792430, -0.51136903,
+ -0.280395335,  2.333902942,  1.85046137,
+  0.562989533,  2.411429921,  0.58171006,
+ -0.372438756,  1.966963841, -1.75494954,
+  0.976973387, -0.465898194, -0.36021629,
+ -0.374580858,  4.571458146, -0.29637946,
+  1.052711466,  1.794700743,  0.03263234,
+ -1.049177007,  2.651193282, -0.20160036,
+ -1.260155245,  2.273766491,  0.49304553,
+  3.241039935,  3.024673235, -1.44008828,
+ -0.416857588,  2.817659446,  1.63178560,
+  0.298227592,  1.790206829,  0.27777310,
+  0.636569674,  2.378167772,  0.19312230,
+ -0.483780626,  1.054591169, -1.53268951,
+  0.516862044,  2.856923011,  1.04811333,
+  0.368964527,  1.538961661, -0.08652221,
+ -0.215380508,  4.416773354,  1.12787566,
+  0.065293034,  0.348951104, -1.81589381,
+ -0.034067254,  1.536012757,  1.27937867,
+  2.128451899,  2.825379863, -0.92236621,
+ -0.741336096,  2.510132547, -0.86859834,
+ -1.095996267,  1.410518961,  0.57288624,
+  0.037788399,  1.003219258,  1.79247535,
+  0.310480749,  2.144475705, -1.97200618,
+  0.436523479,  1.985692587, -0.59352931,
+ -0.458365333,  0.209718763, -0.32381710,
+ -1.063326134,  2.034551067, -0.16849281,
+  1.263185176,  2.190230316,  0.84677032,
+ -0.349650388,  2.174726397,  1.67939223,
+ -0.865512863,  0.944982957,  0.50844280,
+ -0.236279569,  2.476133278,  1.60872711,
+ -0.197175894,  3.378570137,  1.02931664,
+  1.109920290,  2.456236403, -1.44856654,
+  0.084737292,  0.864411530, -1.38698049,
+  0.754053785,  1.564354530, -1.23475125,
+ -0.499292017,  2.346103620, -0.26725944,
+  0.214445310,  1.352954369, -1.65112279,
+ -0.324685911, -0.157646335, -1.10488000,
+  0.094583528,  2.884250820,  0.28859472,
+ -0.895363358,  1.170522388, -0.39932329,
+ -1.310801533,  1.426439729,  0.26186152,
+  1.997213385,  3.503900609,  1.31849551,
+  0.600708824,  1.225855070,  0.56845528,
+ -1.251271362,  2.845731540, -0.43400499,
+ -0.611165917,  0.739317121,  0.83831942,
+ -1.185480085,  1.645457597, -1.56470371
+ )
+```
+
+## 1 Statistical Plots ##
+```{r Part 1 statplots, cache=TRUE}
+# Create movies_small
+set.seed(123)
+movies_small <- movies[sample(nrow(movies), 1000), ]
+movies_small$rating <- factor(round(movies_small$rating))
+
+# Explore movies_small with str()
+str(movies_small)
+
+# Build a scatter plot with mean and 95% CI
+ggplot(movies_small, aes(x = rating, y = votes)) +
+  geom_point() +
+  stat_summary(fun.data = "mean_cl_normal",
+               geom = "crossbar",
+               width = 0.2,
+               col = "red") +
+  scale_y_log10()
+
+# Reproduce the plot
+ggplot(diamonds, aes(x = carat, y = price, col = color)) +
+  geom_point(alpha=0.5, size=0.5, shape=16) +
+  scale_x_log10(expression(log[10](Carat)), limits = c(0.1,10)) +
+  scale_y_log10(expression(log[10](Price)), limits = c(100, 100000)) +
+  scale_color_brewer(palette = "YlOrRd") +
+  coord_equal() +
+  theme_classic()
+
+# Add smooth layer and facet the plot
+ggplot(diamonds, aes(x = carat, y = price, col = color)) +
+  stat_smooth(method="lm") +
+  scale_x_log10(expression(log[10](Carat)), limits = c(0.1,10)) +
+  scale_y_log10(expression(log[10](Price)), limits = c(100,100000)) +
+  scale_color_brewer(palette = "YlOrRd") +
+  coord_equal() +
+  theme_classic()
+
+# movies_small is available
+
+# Add a boxplot geom
+d <- ggplot(movies_small, aes(x = rating, y = votes)) +
+  geom_point() +
+  geom_boxplot() +
+  stat_summary(fun.data = "mean_cl_normal",
+               geom = "crossbar",
+               width = 0.2,
+               col = "red")
+
+# Untransformed plot
+d
+
+# Transform the scale
+d + scale_y_log10()
+
+# Transform the coordinates
+#d + coord_trans(y= "log10")
+
+# Plot object p
+p <- ggplot(diamonds, aes(x = carat, y = price))
+
+# Use cut_interval
+p + geom_boxplot(aes(group = cut_interval(carat, n=10)))
+
+# Use cut_number
+p + geom_boxplot(aes(group = cut_number(carat, n=10)))
+
+# Use cut_width
+p + geom_boxplot(aes(group = cut_width(carat, width=0.25)))
+
+#test_data is available
+
+# Calculating density: d
+d <- density(test_data$norm)
+
+# Use which.max() to calculate mode
+mode <- d$x[which.max(d$y)]
+
+# Finish the ggplot call
+ggplot(test_data, aes(x = norm)) +
+  geom_rug() +
+  geom_density() +
+  geom_vline(xintercept = mode, col = "red")
+
+# test_data is available
+
+# Arguments you'll need later on
+fun_args <- list(mean = mean(test_data$norm), sd = sd(test_data$norm))
+
+# Finish the ggplot
+ggplot(test_data, aes(x = norm)) +
+geom_histogram(aes(y=..density..)) +
+geom_density(col="red") +
+stat_function(fun=dnorm, args=fun_args, col="blue")
+
+# small_data is available
+
+# Get the bandwith
+get_bw <- density(small_data$x)$bw
+
+# Basic plotting object
+p <- ggplot(small_data, aes(x = x)) +
+  geom_rug() +
+  coord_cartesian(ylim = c(0,0.5))
+
+# Create three plots
+p + geom_density()
+p + geom_density(adjust=0.25)
+p + geom_density(bw=0.25*get_bw)
+
+# Create two plots
+p + geom_density(kernel="r")
+p + geom_density(kernel="e")
+
+# Finish the plot
+ggplot(diamonds, aes(x = cut, y = price, col=color)) +
+geom_boxplot(varwidth=TRUE) +
+facet_grid(.~color)
+
+
+# Individual densities
+ggplot(mammals[mammals$vore == "Insectivore", ], aes(x = sleep_total, fill = vore)) +
+  geom_density(col = NA, alpha = 0.35) +
+  scale_x_continuous(limits = c(0, 24)) +
+  coord_cartesian(ylim = c(0, 0.3))
+
+# With faceting
+ggplot(mammals, aes(x = sleep_total, fill = vore)) +
+  geom_density(col = NA, alpha = 0.35) +
+  scale_x_continuous(limits = c(0, 24)) +
+  coord_cartesian(ylim = c(0, 0.3)) +
+  facet_wrap( ~ vore, nrow=2)
+
+# Note that by default, the x ranges fill the scale
+ggplot(mammals, aes(x = sleep_total, fill = vore)) +
+  geom_density(col = NA, alpha = 0.35) +
+  scale_x_continuous(limits = c(0, 24)) +
+  coord_cartesian(ylim = c(0, 0.3))
+
+# Trim each density plot individually
+ggplot(mammals, aes(x = sleep_total, fill = vore)) +
+  geom_density(col = NA, alpha = 0.35, trim = TRUE) +
+  scale_x_continuous(limits=c(0,24)) +
+  coord_cartesian(ylim = c(0, 0.3))
+
+# Base layers
+p <- ggplot(faithful, aes(x = waiting, y = eruptions)) +
+  scale_y_continuous(limits = c(1, 5.5), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(40, 100), expand = c(0, 0)) +
+  coord_fixed(60 / 4.5)
+
+# 1 - Use geom_density_2d()
+p + geom_density_2d()
+
+# 2 - Use stat_density_2d() with arguments
+p + stat_density_2d(aes(col = ..level..), h = c(5, 0.5))
+
+ggplot(faithful, aes(x = waiting, y = eruptions)) +
+  scale_y_continuous(limits = c(1, 5.5), expand = c(0,0)) +
+  scale_x_continuous(limits = c(40, 100), expand = c(0,0)) +
+  coord_fixed(60/4.5) +
+  stat_density_2d(geom = "tile", aes(fill = ..density..), h=c(5,.5), contour = FALSE) +
+  scale_fill_viridis()
+```
+
+## 2 Graphics of Large Data ##
+```{r Part 2 specdata1, cache=TRUE}
+# pairs
+pairs(iris[1:4])
+
+# chart.Correlation
+library(PerformanceAnalytics)
+chart.Correlation(iris[1:4])
+
+# ggpairs
+library(GGally)
+mtcars_fact <- mtcars
+mtcars_fact$cyl <- as.factor(mtcars_fact$cyl)
+ggpairs(mtcars_fact[1:3])
+
+
+africa_sample <- africa[6220:6269,]
+africa_sample$ID <- rownames(africa_sample)
+
+library(tidyr)
+africa_sample_tidy <- gather(africa_sample, key, value, -ID)
+head(africa_sample_tidy)
+
+
+
+# Gather africa_sample
+
+africa_sample_tidy <- gather(africa_sample, key, value, -ID)
+head(africa_sample_tidy)
+
+# Finish the ggplot command
+ggplot(africa_sample_tidy, aes(x = factor(ID), y = value, fill = key)) +
+  geom_col() +
+  coord_flip()
+
+# Load ggtern
+library(ggtern)
+
+# Build ternary plot
+ggtern(africa, aes(x = Sand, y = Silt, z = Clay)) +
+  geom_point(shape=16, alpha=0.2)
+
+# Plot 1
+ggtern(africa, aes(x = Sand, y = Silt, z = Clay)) +
+  geom_density_tern()
+
+# Plot 2
+ggtern(africa, aes(x = Sand, y = Silt, z = Clay)) +
+  stat_density_tern(geom = "polygon", aes(fill = ..level.., alpha = ..level..)) +
+  guides(fill = FALSE)
+
+
+
+# Load geomnet & examine structure of madmen
+library(geomnet)
+str(madmen)
+
+# Merge edges and vertices
+mmnet <- merge(madmen$edges, madmen$vertices,
+               by.x = "Name1", by.y = "label",
+               all = TRUE)
+
+# Examine structure of mmnet
+str(mmnet)
+
+# Finish the ggplot command
+ggplot(data = mmnet, aes(from_id = Name1, to_id = Name2)) +
+  geom_net(aes(col=Gender), size=6, linewidth=1, labelon=TRUE, fontsize=3, labelcolour="black")
+
+# geomnet is pre-loaded and mmnet is defined
+head(mmnet)
+
+# Node colors
+pink_and_blue <- c(female = "#FF69B4", male = "#0099ff")
+
+# Tweak the network plot
+ggplot(data = mmnet, aes(from_id = Name1, to_id = Name2)) +
+  geom_net(aes(col = Gender),
+           size = 6,
+           linewidth = 1,
+           labelon = TRUE,
+           fontsize = 3,
+           labelcolour = "black",
+           # Make the graph directed
+           directed=TRUE) +
+  # Add manual color scale         
+  scale_color_manual(values=pink_and_blue) +
+  # Set x-axis limits
+  xlim(-0.05, 1.05) +
+  # Set void theme
+  theme_void()
+
+#load trees data set
+data(trees)
+
+# Create linear model: res
+res <- lm(Volume ~ Girth, data = trees)
+
+# Plot res
+plot(res)
+
+# Import ggfortify and use autoplot()
+library(ggfortify)
+autoplot(res, ncol=2)
+
+library(vars)
+data(Canada)
+
+# Inspect structure of Canada
+str(Canada)
+
+# Call plot() on Canada
+plot(Canada)
+
+# Call autoplot() on Canada
+autoplot(Canada)
+
+data(eurodist)
+
+# ggfortify and eurodist are available
+# Autoplot + ggplot2 tweaking
+autoplot(eurodist) + 
+  coord_fixed()
+
+# Autoplot of MDS
+autoplot(cmdscale(eurodist, eig = TRUE), 
+         label = TRUE, 
+         label.size = 3, 
+         size = 0)
+
+# Perform clustering
+iris_k <- kmeans(iris[-5], 3)
+
+# Autoplot: color according to cluster
+autoplot(iris_k, data = iris, frame = TRUE)
+
+# Autoplot: above, plus shape according to species
+autoplot(iris_k, data = iris, frame = TRUE, shape='Species')
+```
+
+## 3 Maps maps maps ##
+```{r Part 3 maps}
+# maps, ggplot2, and ggmap are pre-loaded
+# Use map_data() to create usa and inspect
+usa <- map_data("usa")
+str(usa)
+
+# Build the map
+ggplot(usa, aes(x = long, y = lat, group = group)) +
+  geom_polygon() +
+  coord_map() +
+  theme_nothing()
+
+# usa, cities, and all required packages are available
+
+# Finish plot 1
+ggplot(usa, aes(x = long, y = lat, group = group)) +
+  geom_polygon() +
+  geom_point(data = cities, aes(group = State, size = Pop_est),
+             col = "red", shape = 16, alpha = 0.6) +
+  coord_map() +
+  theme_map()
+
+# Arrange cities
+cities_arr <- arrange(cities, Pop_est)
+
+# Copy-paste plot 1 and adapt
+ggplot(usa, aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill="grey90") +
+  geom_point(data = cities_arr, aes(group = State, col = Pop_est),
+             size=2, shape = 16, alpha = 0.6) +
+  coord_map() +
+  theme_map() +
+  scale_color_viridis()
+
+library(usmap)
+data(statepop)
+
+state <- map_data("state")
+statepop <- statepop %>% select ("region"=full, "Pop_est"=pop_2015 )
+
+statepop$region <- tolower(statepop$region)
+
+# Map of states
+ggplot(state, aes(x = long, y = lat, fill = region, group = group)) +
+  geom_polygon(col = "white") +
+  coord_map() +
+  theme_nothing()
+
+# Merge state and pop: state2
+state2 <- merge(state, statepop)
+
+# Map of states with populations
+ggplot(state2, aes(x = long, y = lat, fill = Pop_est, group = group)) +
+  geom_polygon(col = "white") +
+  coord_map() +
+  theme_map()
+
+# All required packages are available
+# Import shape information: germany
+#germany <- readOGR(dsn = "shapes", layer = "DEU_adm1")
+
+# fortify germany: bundes
+#bundes <- fortify(germany)
+
+# Plot map of germany
+#ggplot(bundes, aes(x = long, y = lat, group = group)) +
+#    geom_polygon(fill="blue", col="white") +
+#    coord_map() +
+#    theme_nothing()
+
+# germany, bundes and unemp are available
+
+# re-add state names to bundes
+#bundes$state <- factor(as.numeric(bundes$id))
+#levels(bundes$state) <- germany$NAME_1
+
+# Merge bundes and unemp: bundes_unemp
+#bundes_unemp <- merge(bundes, unemp)
+
+# Update the ggplot call
+#ggplot(bundes_unemp, aes(x = long, y = lat, group = group, fill = #unemployment)) +
+#  geom_polygon() +
+#  coord_map() +
+#  theme_map()
+
+
+#######################
+## Cartographic maps ##
+#######################
+
+# Load the ggmap package
+library(ggmap)
+
+# Create the map of London
+ggmap(london_map_13)
+
+# Create the second map of London
+ggmap(london_ton_13)
+
+
+    
+```
+
+
+
+
+
+
+

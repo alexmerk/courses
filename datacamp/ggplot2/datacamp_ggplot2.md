@@ -1,9 +1,8 @@
-Data Visualization with ggplot2
+Data Visualization with ggplot2 (Part 1)
 ================
+2018-01-15
 
-    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 150 rows
-    ## [601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615,
-    ## 616, 617, 618, 619, 620, ...].
+    ## Loading required package: carData
 
 1 Introduction
 --------------
@@ -122,126 +121,11 @@ ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +
 ![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-1.png)
 
 ``` r
-# Convert cyl to factor (don't need to change)
-mtcars$cyl <- as.factor(mtcars$cyl)
-
-# Example from base R (don't need to change)
-plot(mtcars$wt, mtcars$mpg, col = mtcars$cyl)
-abline(lm(mpg ~ wt, data = mtcars), lty = 2)
-lapply(mtcars$cyl, function(x) {
-  abline(lm(mpg ~ wt, mtcars, subset = (cyl == x)), col = x)
-  })
-```
-
-    ## [[1]]
-    ## NULL
-    ## 
-    ## [[2]]
-    ## NULL
-    ## 
-    ## [[3]]
-    ## NULL
-    ## 
-    ## [[4]]
-    ## NULL
-    ## 
-    ## [[5]]
-    ## NULL
-    ## 
-    ## [[6]]
-    ## NULL
-    ## 
-    ## [[7]]
-    ## NULL
-    ## 
-    ## [[8]]
-    ## NULL
-    ## 
-    ## [[9]]
-    ## NULL
-    ## 
-    ## [[10]]
-    ## NULL
-    ## 
-    ## [[11]]
-    ## NULL
-    ## 
-    ## [[12]]
-    ## NULL
-    ## 
-    ## [[13]]
-    ## NULL
-    ## 
-    ## [[14]]
-    ## NULL
-    ## 
-    ## [[15]]
-    ## NULL
-    ## 
-    ## [[16]]
-    ## NULL
-    ## 
-    ## [[17]]
-    ## NULL
-    ## 
-    ## [[18]]
-    ## NULL
-    ## 
-    ## [[19]]
-    ## NULL
-    ## 
-    ## [[20]]
-    ## NULL
-    ## 
-    ## [[21]]
-    ## NULL
-    ## 
-    ## [[22]]
-    ## NULL
-    ## 
-    ## [[23]]
-    ## NULL
-    ## 
-    ## [[24]]
-    ## NULL
-    ## 
-    ## [[25]]
-    ## NULL
-    ## 
-    ## [[26]]
-    ## NULL
-    ## 
-    ## [[27]]
-    ## NULL
-    ## 
-    ## [[28]]
-    ## NULL
-    ## 
-    ## [[29]]
-    ## NULL
-    ## 
-    ## [[30]]
-    ## NULL
-    ## 
-    ## [[31]]
-    ## NULL
-    ## 
-    ## [[32]]
-    ## NULL
-
-``` r
-legend(x = 5, y = 33, legend = levels(mtcars$cyl),
-       col = 1:3, pch = 1, bty = "n")
-```
-
-![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-2.png)
-
-``` r
 # Plot 1: add geom_point() to this command to create a scatter plot
 ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) + geom_point()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-3.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-2.png)
 
 ``` r
 # Fill in using instructions Plot 1
@@ -252,7 +136,7 @@ ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +
   geom_smooth(method=lm, se=FALSE)   # Fill in using instructions Plot 2
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-4.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-3.png)
 
 ``` r
 # Plot 3: include a lm for the entire dataset in its whole
@@ -262,7 +146,7 @@ ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +
   geom_smooth(method=lm, se=FALSE, linetype=2, aes(group=1))   
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-5.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-4.png)
 
 ``` r
 # Consider the structure of iris, iris.wide and iris.tidy (in that order)
@@ -292,7 +176,7 @@ str(iris.wide)
 str(iris.tidy)
 ```
 
-    ## 'data.frame':    750 obs. of  4 variables:
+    ## 'data.frame':    600 obs. of  4 variables:
     ##  $ Species: Factor w/ 3 levels "setosa","versicolor",..: 1 1 1 1 1 1 1 1 1 1 ...
     ##  $ Part   : chr  "Sepal" "Sepal" "Sepal" "Sepal" ...
     ##  $ Measure: chr  "Length" "Length" "Length" "Length" ...
@@ -306,18 +190,7 @@ ggplot(iris.tidy, aes(x = Species, y = Value, col = Part)) +
   facet_grid(. ~ Measure)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-6.png)
-
-``` r
-# Fill in the ___ to produce to the correct iris.tidy dataset
-iris.tidy <- iris %>%
-  gather(key, Value, -Species) %>%
-  separate(key, c("Part", "Measure"), "\\.")
-```
-
-    ## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 150 rows
-    ## [601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615,
-    ## 616, 617, 618, 619, 620, ...].
+![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-5.png)
 
 ``` r
 # Fill in the ___ to produce the plot given to the right
@@ -326,7 +199,7 @@ ggplot(iris.wide, aes(x = Length, y = Width, color = Part)) +
   facet_grid(. ~ Species)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-7.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%202%20Data-6.png)
 
 3 Aesthetics
 ------------
@@ -339,7 +212,7 @@ ggplot(mtcars, aes(x=mpg, y=cyl)) +
   geom_point()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%203%20aes-1.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.1%20aes-1.png)
 
 ``` r
 # 2 - Reverse: Map cyl to x and mpg to y
@@ -347,7 +220,7 @@ ggplot(mtcars, aes(x=cyl, y=mpg)) +
   geom_point()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%203%20aes-2.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.1%20aes-2.png)
 
 ``` r
 # 3 - Map wt to x, mpg to y and cyl to col
@@ -355,7 +228,7 @@ ggplot(mtcars, aes(x=wt, y=mpg, col=cyl)) +
   geom_point()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%203%20aes-3.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.1%20aes-3.png)
 
 ``` r
 # 4 - Change shape and size of the points in the above plot
@@ -363,7 +236,7 @@ ggplot(mtcars, aes(x=wt, y=mpg, col=cyl)) +
   geom_point(shape=1, size=4)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%203%20aes-4.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.1%20aes-4.png)
 
 ``` r
 # am and cyl are factors, wt is numeric
@@ -390,7 +263,7 @@ ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +
   geom_point(shape = 1, size = 4)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%203%20aes-5.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.1%20aes-5.png)
 
 ``` r
 # 1 - Map cyl to fill
@@ -398,7 +271,7 @@ ggplot(mtcars, aes(x = wt, y = mpg, fill = cyl)) +
   geom_point(shape = 1, size = 4)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%203%20aes-6.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.1%20aes-6.png)
 
 ``` r
 # 2 - Change shape and alpha of the points in the above plot
@@ -406,7 +279,7 @@ ggplot(mtcars, aes(x = wt, y = mpg, fill = cyl)) +
   geom_point(shape = 21, size = 4, alpha=0.6)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%203%20aes-7.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.1%20aes-7.png)
 
 ``` r
 # 3 - Map am to col in the above plot
@@ -414,7 +287,7 @@ ggplot(mtcars, aes(x = wt, y = mpg, col = am, fill=cyl)) +
   geom_point(shape = 21, size = 4, alpha=0.6)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/Part%203%20aes-8.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.1%20aes-8.png)
 
 ### 3.2 All about attributes
 
@@ -426,28 +299,28 @@ my_color <- "#4ABEFF"
 ggplot(mtcars, aes(x=wt, y=mpg, color=cyl)) + geom_point()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.2%20aes-1.png)
 
 ``` r
 # Same, but set color *attribute* in geom layer 
 ggplot(mtcars, aes(x=wt, y=mpg, color=cyl)) + geom_point(color=my_color)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-2-2.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.2%20aes-2.png)
 
 ``` r
 # Set the fill aesthetic; color, size and shape attributes
 ggplot(mtcars, aes(x=wt, y=mpg, fill=cyl)) + geom_point(size=10, shape=23, color=my_color)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-2-3.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.2%20aes-3.png)
 
 ``` r
 # Expand to draw points with alpha 0.5
 ggplot(mtcars, aes(x = wt, y = mpg, fill = cyl)) + geom_point(alpha=0.5)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-2-4.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.2%20aes-4.png)
 
 ``` r
 # Expand to draw points with shape 24 and color yellow
@@ -455,7 +328,7 @@ ggplot(mtcars, aes(x = wt, y = mpg, fill = cyl)) + geom_point(alpha=0.5)
 ggplot(mtcars, aes(x = wt, y = mpg, fill=cyl)) + geom_point(shape=24, color="yellow")
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-2-5.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.2%20aes-5.png)
 
 ``` r
 # Expand to draw text with label rownames(mtcars) and color red
@@ -464,28 +337,28 @@ ggplot(mtcars, aes(x = wt, y = mpg, fill = cyl)) +
 geom_text(label=rownames(mtcars), color='red')
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-2-6.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.2%20aes-6.png)
 
 ``` r
 # Map mpg onto x, qsec onto y and factor(cyl) onto col
 ggplot(mtcars, aes(x=mpg, y=qsec, color=factor(cyl))) + geom_point()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-2-7.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.2%20aes-7.png)
 
 ``` r
 # Add mapping: factor(am) onto shape
 ggplot(mtcars, aes(x=mpg, y=qsec, color=factor(cyl), shape=factor(am))) + geom_point()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-2-8.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.2%20aes-8.png)
 
 ``` r
 # Add mapping: (hp/wt) onto size
 ggplot(mtcars, aes(x=mpg, y=qsec, color=factor(cyl), shape=factor(am), size=(hp/wt) )) + geom_point()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-2-9.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.2%20aes-9.png)
 
 ### 3.3 Tweaking scales
 
@@ -496,7 +369,7 @@ cyl.am +
   geom_bar(position="stack")
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-1.png)
 
 ``` r
 # Fill - show proportion
@@ -504,7 +377,7 @@ cyl.am +
   geom_bar(position = "fill")  
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-2.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-2.png)
 
 ``` r
 # The base layer, cyl.am, is available for you
@@ -513,7 +386,7 @@ cyl.am +
   geom_bar()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-3.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-3.png)
 
 ``` r
 # Fill - show proportion
@@ -521,7 +394,7 @@ cyl.am +
   geom_bar(position = "fill")  
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-4.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-4.png)
 
 ``` r
 # Dodging - principles of similarity and proximity
@@ -529,7 +402,7 @@ cyl.am +
   geom_bar(position = "dodge") 
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-5.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-5.png)
 
 ``` r
 # Clean up the axes with scale_ functions
@@ -544,7 +417,7 @@ cyl.am +
                     labels = lab) 
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-6.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-6.png)
 
 ``` r
 ### UNIVARIATE PLOTS 
@@ -553,7 +426,7 @@ ggplot(mtcars, aes(x = mpg, y = 0)) +
   geom_jitter()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-7.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-7.png)
 
 ``` r
 # 2 - Add function to change y axis limits
@@ -561,7 +434,7 @@ ggplot(mtcars, aes(x = mpg, y = 0)) +
   geom_jitter() + scale_y_continuous(limits=c(-2,2))
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-8.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-8.png)
 
 ``` r
 ### Dealing with overplotting
@@ -569,46 +442,442 @@ ggplot(mtcars, aes(x = mpg, y = 0)) +
 ggplot(mtcars, aes(x=wt, y=mpg, color=cyl)) + geom_point(size=4)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-9.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-9.png)
 
 ``` r
 # Hollow circles - an improvement
 ggplot(mtcars, aes(x=wt, y=mpg, color=cyl)) + geom_point(size=4, shape=1)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-10.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-10.png)
 
 ``` r
 # Add transparency - very nice
 ggplot(mtcars, aes(x=wt, y=mpg, color=cyl)) + geom_point(size=4, shape=1, alpha=0.6)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-11.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-11.png)
 
 ``` r
 # Scatter plot: carat (x), price (y), clarity (color)
 ggplot(diamonds, aes(x=carat, y=price, color=clarity)) + geom_point()
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-12.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-12.png)
 
 ``` r
 # Adjust for overplotting
 ggplot(diamonds, aes(x=carat, y=price, color=clarity)) + geom_point(alpha=0.5)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-13.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-13.png)
 
 ``` r
 # Scatter plot: clarity (x), carat (y), price (color)
 ggplot(diamonds, aes(x=clarity, y=carat, color=price)) + geom_point(alpha=0.5)
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-14.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-14.png)
 
 ``` r
 # Dot plot with jittering
 ggplot(diamonds, aes(x=clarity, y=carat, color=price)) + geom_point(alpha=0.5, position="jitter")
 ```
 
-![](datacamp_ggplot2_files/figure-markdown_github/unnamed-chunk-3-15.png)
+![](datacamp_ggplot2_files/figure-markdown_github/Part%203.3%20aes-15.png)
+
+Part 4 Geometries
+
+### 4.1 Scatter plots
+
+``` r
+# Shown in the viewer:
+ggplot(mtcars, aes(x = cyl, y = wt)) +
+  geom_point()
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.1%20scatter-1.png)
+
+``` r
+# Solutions:
+# 1 - With geom_jitter()
+ggplot(mtcars, aes(x = cyl, y = wt)) +
+  geom_jitter()
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.1%20scatter-2.png)
+
+``` r
+# 2 - Set width in geom_jitter()
+ggplot(mtcars, aes(x = cyl, y = wt)) +
+  geom_jitter(width=0.1)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.1%20scatter-3.png)
+
+``` r
+# 3 - Set position = position_jitter() in geom_point() ()
+ggplot(mtcars, aes(x = cyl, y = wt)) +
+  geom_jitter(position=position_jitter(0.1))
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.1%20scatter-4.png)
+
+``` r
+# Examine the structure of Vocab
+str(Vocab)
+```
+
+    ## 'data.frame':    30351 obs. of  4 variables:
+    ##  $ year      : num  1974 1974 1974 1974 1974 ...
+    ##  $ sex       : Factor w/ 2 levels "Female","Male": 2 2 1 1 1 2 2 2 1 1 ...
+    ##  $ education : num  14 16 10 10 12 16 17 10 12 11 ...
+    ##  $ vocabulary: num  9 9 9 5 8 8 9 5 3 5 ...
+    ##  - attr(*, "na.action")= 'omit' Named int  1 2 3 4 5 6 7 8 9 10 ...
+    ##   ..- attr(*, "names")= chr  "19720001" "19720002" "19720003" "19720004" ...
+
+``` r
+# Basic scatter plot of vocabulary (y) against education (x). Use geom_point()
+ggplot(Vocab, aes(x=education, y=vocabulary)) + geom_point()
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.1%20scatter-5.png)
+
+``` r
+# Use geom_jitter() instead of geom_point()
+ggplot(Vocab, aes(x=education, y=vocabulary)) + geom_jitter()
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.1%20scatter-6.png)
+
+``` r
+# Using the above plotting command, set alpha to a very low 0.2
+ggplot(Vocab, aes(x=education, y=vocabulary)) + geom_jitter(alpha=0.2)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.1%20scatter-7.png)
+
+``` r
+# Using the above plotting command, set the shape to 1
+ggplot(Vocab, aes(x=education, y=vocabulary)) + geom_jitter(alpha=0.2, shape=1)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.1%20scatter-8.png)
+
+### 4.2 Bar plots and histograms
+
+``` r
+# 1 - Make a univariate histogram
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-1.png)
+
+``` r
+# 2 - Plot 1, plus set binwidth to 1 in the geom layer
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth=1)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-2.png)
+
+``` r
+# 3 - Plot 2, plus MAP ..density.. to the y aesthetic (i.e. in a second aes() function)
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth=1, aes(y=..density..))
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-3.png)
+
+``` r
+# 4 - plot 3, plus SET the fill attribute to "#377EB8"
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth=1, fill="#377EB8", aes(y=..density..))
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-4.png)
+
+``` r
+# Converting cyl and am into factors
+mtcars$cyl <- as.factor(mtcars$cyl)
+mtcars$am <- as.factor(mtcars$am)
+
+# Draw a bar plot of cyl, filled according to am
+ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar()
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-5.png)
+
+``` r
+# Change the position argument to stack
+ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position="stack")
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-6.png)
+
+``` r
+# Change the position argument to fill
+ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position="fill")
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-7.png)
+
+``` r
+# Change the position argument to dodge
+ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position="dodge")
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-8.png)
+
+``` r
+# 1 - The last plot form the previous exercise
+ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position = "dodge")
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-9.png)
+
+``` r
+# 2 - Define posn_d with position_dodge()
+posn_d <- position_dodge(width=0.2)
+
+# 3 - Change the position argument to posn_d
+ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position = posn_d)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-10.png)
+
+``` r
+# 4 - Use posn_d as position and adjust alpha to 0.6
+ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar(position = posn_d, alpha =0.6)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-11.png)
+
+``` r
+# A basic histogram, add coloring defined by cyl
+ggplot(mtcars, aes(mpg, fill=cyl)) +
+  geom_histogram(binwidth = 1)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-12.png)
+
+``` r
+# Change position to identity
+ggplot(mtcars, aes(mpg, fill=cyl)) +
+  geom_histogram(binwidth = 1, position="identity")
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-13.png)
+
+``` r
+# Change geom to freqpoly (position is identity by default)
+ggplot(mtcars, aes(mpg, color=cyl)) +
+  geom_freqpoly(binwidth = 1)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-14.png)
+
+``` r
+# Use str() on Vocab to check out the structure
+Vocab$education <- as.factor(Vocab$education)
+Vocab$vocabulary <- as.factor(Vocab$vocabulary)
+str(Vocab)
+```
+
+    ## 'data.frame':    30351 obs. of  4 variables:
+    ##  $ year      : num  1974 1974 1974 1974 1974 ...
+    ##  $ sex       : Factor w/ 2 levels "Female","Male": 2 2 1 1 1 2 2 2 1 1 ...
+    ##  $ education : Factor w/ 21 levels "0","1","2","3",..: 15 17 11 11 13 17 18 11 13 12 ...
+    ##  $ vocabulary: Factor w/ 11 levels "0","1","2","3",..: 10 10 10 6 9 9 10 6 4 6 ...
+    ##  - attr(*, "na.action")= 'omit' Named int  1 2 3 4 5 6 7 8 9 10 ...
+    ##   ..- attr(*, "names")= chr  "19720001" "19720002" "19720003" "19720004" ...
+
+``` r
+# Example of how to use a brewed color palette
+ggplot(mtcars, aes(x = cyl, fill = am)) +
+  geom_bar() +
+  scale_fill_brewer(palette = "Set1")
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-15.png)
+
+``` r
+# Plot education on x and vocabulary on fill
+# Use the default brewed color palette
+ggplot(Vocab, aes(x = education, fill = vocabulary)) + geom_bar(position="fill") +
+scale_fill_brewer(palette = "Set1")
+```
+
+    ## Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette Set1 is 9
+    ## Returning the palette you asked for with that many colors
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-16.png)
+
+``` r
+blues <- brewer.pal(9, "Blues") # from the RColorBrewer package
+
+# 1 - Make a color range using colorRampPalette() and the set of blues
+blue_range <- colorRampPalette(blues)
+
+# 2 - Use blue_range to adjust the color of the bars, use scale_fill_manual()
+ggplot(Vocab, aes(x = education, fill = vocabulary)) +
+  geom_bar(position = "fill") +
+  scale_fill_manual(values=blue_range(11))
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%204.2%20barhist-17.png)
+
+### Part 5 qplot(), wrapping uo
+
+``` r
+# The old way (shown)
+plot(mpg ~ wt, data = mtcars) # formula notation
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-1.png)
+
+``` r
+with(mtcars, plot(wt, mpg)) # x, y notation
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-2.png)
+
+``` r
+# Using ggplot:
+ggplot(mtcars, aes(x=wt, y=mpg)) +
+  geom_point()
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-3.png)
+
+``` r
+# Using qplot:
+qplot(wt, mpg, data = mtcars)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-4.png)
+
+``` r
+# basic qplot scatter plot:
+qplot(wt, mpg, data = mtcars)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-5.png)
+
+``` r
+# Categorical variable mapped onto size:
+# cyl
+qplot(wt, mpg, data = mtcars, size = factor(cyl))
+```
+
+    ## Warning: Using size for a discrete variable is not advised.
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-6.png)
+
+``` r
+# gear
+qplot(wt, mpg, data = mtcars, size = factor(gear))
+```
+
+    ## Warning: Using size for a discrete variable is not advised.
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-7.png)
+
+``` r
+# Continuous variable mapped onto col:
+# hp
+qplot(wt, mpg, data = mtcars, col = hp)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-8.png)
+
+``` r
+# qsec
+qplot(wt, mpg, data = mtcars, col = qsec)
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-9.png)
+
+``` r
+# qplot() with x only
+qplot(data=mtcars, x=factor(cyl))
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-10.png)
+
+``` r
+# qplot() with x and y
+qplot(data=mtcars, x=factor(cyl), y=factor(vs))
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-11.png)
+
+``` r
+# qplot() with geom set to jitter manually
+qplot(data=mtcars, x=factor(cyl), y=factor(vs), geom="jitter")
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-12.png)
+
+``` r
+# cyl and am are factors, wt is numeric
+class(mtcars$cyl)
+```
+
+    ## [1] "factor"
+
+``` r
+class(mtcars$am)
+```
+
+    ## [1] "factor"
+
+``` r
+class(mtcars$wt)
+```
+
+    ## [1] "numeric"
+
+``` r
+# "Basic" dot plot, with geom_point():
+ggplot(mtcars, aes(cyl, wt, col = am)) +
+  geom_point(position = position_jitter(0.2, 0))
+```
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-13.png)
+
+``` r
+# 1 - "True" dot plot, with geom_dotplot():
+ggplot(mtcars, aes(cyl, wt, fill = am)) +
+  geom_dotplot(binaxis = "y", stackdir = "center")
+```
+
+    ## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-14.png)
+
+``` r
+# 2 - qplot with geom "dotplot", binaxis = "y" and stackdir = "center"
+qplot(
+  cyl, wt,
+  data = mtcars,
+  fill = am,
+  geom = "dotplot",
+  binaxis = "y",
+  stackdir = "center"
+)
+```
+
+    ## `stat_bindot()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](datacamp_ggplot2_files/figure-markdown_github/Part%205%20qplot-15.png)
