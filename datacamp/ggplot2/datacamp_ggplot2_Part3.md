@@ -705,4 +705,33 @@ ggplot(state2, aes(x = long, y = lat, fill = Pop_est, group = group)) +
 #    geom_polygon(fill="blue", col="white") +
 #    coord_map() +
 #    theme_nothing()
+
+# germany, bundes and unemp are available
+
+# re-add state names to bundes
+#bundes$state <- factor(as.numeric(bundes$id))
+#levels(bundes$state) <- germany$NAME_1
+
+# Merge bundes and unemp: bundes_unemp
+#bundes_unemp <- merge(bundes, unemp)
+
+# Update the ggplot call
+#ggplot(bundes_unemp, aes(x = long, y = lat, group = group, fill = #unemployment)) +
+#  geom_polygon() +
+#  coord_map() +
+#  theme_map()
+
+
+#######################
+## Cartographic maps ##
+#######################
+
+# Load the ggmap package
+library(ggmap)
+
+# Create the map of London
+#ggmap(london_map_13)
+
+# Create the second map of London
+#ggmap(london_ton_13)
 ```

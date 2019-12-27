@@ -645,10 +645,10 @@ ggplot(state2, aes(x = long, y = lat, fill = Pop_est, group = group)) +
 library(ggmap)
 
 # Create the map of London
-ggmap(london_map_13)
+#ggmap(london_map_13)
 
 # Create the second map of London
-ggmap(london_ton_13)
+#ggmap(london_ton_13)
 
 
     
