@@ -4,11 +4,11 @@ Various projects accomplished while attaining (online) courses. This is not a wo
 ## R
 ### Multivariate Statistics and Visualization
 Applying multivariate techniques and plotting the results. Working with a dataset on wine sorts.  
-GitHub: [link](r/datacamp/mva/mva_r.md)  
+GitHub: [link](r/datacamp/mva/mva_r.md)    
 
 ### Explorative Data Analysis case study
 Using **dplyr**, **ggplot2**, and **broom** to analyze the voting behavior of countries in the United Nations General Assembly.  
-GitHub: [raw html]
+GitHub: [raw html](https://github.com/alexmerk/courses/blob/master/r/datacamp/eda/datacamp_eda.html)  
 RPubs: [link](https://rpubs.com/alexmerk/640576)  
 
 ## Python
