@@ -1,6 +1,6 @@
 ---
 title: "DataCamp - EDA Case Study"
-author: "alexmerk"
+author: "Aleksandr Merkulov"
 date: "December 12, 2018"
 output: html_document
 ---
@@ -13,13 +13,18 @@ library(pacman)
 pacman::p_load(dplyr, ggplot2, countrycode, broom, purrr, tidyr)
 ```
 
-```{r import, cache=TRUE}
+```{r import, cache=FALSE, include=FALSE}
 # Importing data
 votes <- as_tibble(read.csv(
-    file="https://github.com/alexmerk/xcourse/raw/master/datacamp_eda/votes.csv"))
+    #file="https://github.com/alexmerk/courses/blob/master/r/datacamp/eda/votes.csv"))
+  file="C:/github/course/r/datacamp/eda/votes.csv"))
 descriptions <- as_tibble(read.csv(
-    file="https://github.com/alexmerk/xcourse/raw/master/datacamp_eda/descriptions.csv"))
+    file="C:/github/course/r/datacamp/eda/descriptions.csv"))
 ```
+## Exploratory Data Analysis
+The following project was completed as a part of Datacamp's R courses. Below is 
+the original project description:  
+_Once you've started learning tools for data manipulation and visualization like dplyr and ggplot2, this course gives you a chance to use them in action on a real dataset. You'll explore the historical voting of the United Nations General Assembly, including analyzing differences in voting between countries, across time, and among international issues. In the process you'll gain more practice with the dplyr and ggplot2 packages, learn about the broom package for tidying model output, and experience the kind of start-to-finish exploratory analysis common in data science._  
 
 ### 1 Data cleaning and summarizing with dplyr
 ```{r dplyr}
