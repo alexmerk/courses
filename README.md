@@ -17,6 +17,11 @@ Basic data handling using **pandas**. Data visualization using **matplotlib**, *
 GitHub: [link](python/datacamp_apps.ipynb)  
 nbviewer: [link](https://nbviewer.jupyter.org/github/alexmerk/courses/blob/master/python/datacamp_apps.ipynb)
 
+### Nobel laureates 
+Basic data handling including transforming variables, conditional subsetting, and summary statistics. Basic plotting using **seaborn**.
+GitHub: [link](python/datacamp_nobel.ipynb)  
+nbviewer: [link](https://nbviewer.jupyter.org/github/alexmerk/courses/blob/master/python/datacamp_nobel.ipynb)
+
 ### Credict Card Rating Applications
 Using **logistic regression** with **scikit-learn** to predict approval ratings for issuance of credict cards. Includes simple code for **grid search**. Completed as a part of Datacamp's "Data Scientists with Python" career track.  
 GitHub: [link](python/datacamp_cc-approval.ipynb)  
